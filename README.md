@@ -48,6 +48,7 @@
 
 В файле \src-tauri\tauri.conf.json добавляем зависимость на созданную папку: bundle -> resources -> ["lib/*"]
 Полностью конфиг получится такой
+
     {
         "$schema": "https://schema.tauri.app/config/2",
         "productName": "tauri-use-dll-examlpe",
@@ -84,6 +85,7 @@
 
 ## Зависимости Rust
 Для использования dll мы будем использовать 2 дополнительные зависимости. Их необходимо добавить в файл Cargo.toml в [dependencies]:
+
     libc = "0.2"
     libloading = "0.8"
 
@@ -117,6 +119,12 @@
         format!("Hello, {}! You've been greeted from Rust!", name)
     }
 
+Проверка:
+Запускаем приложение 
+
+     npm run tauri dev
+
+Когда появится окно приложения, нажимаем кнопку Greet
 В консоли вы должны увидеть "Hello world!"
 
 ### Сложный вызов: 
