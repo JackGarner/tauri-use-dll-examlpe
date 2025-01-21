@@ -12,8 +12,8 @@ fn greet(name: &str) -> String {
     let _ = call_simle();
 
     match call_complex() {
-        Ok(json_result) => json_result,  // Возвращаем JSON строку
-        Err(err) => json!({ "error": err }).to_string(),  // Возвращаем ошибку в JSON формате
+        Ok(json_result) => json_result,  // Returning JSON string
+        Err(err) => json!({ "error": err }).to_string(),  // Returning error in JSON format
     }
 }
 
@@ -60,10 +60,10 @@ fn call_complex() -> Result<String, String> {
                 return;
             }
 
-            // Конвертируем C строку в Rust строку
+            // Convert C string to Rust string
             let result_str = CStr::from_ptr(result_ptr).to_string_lossy().into_owned();
 
-            // Возвращаем данные в формате JSON
+            // Return data in JSON format
             let json_result = json!({ "result": result_str });
 
             tx.send(Ok(json_result)).unwrap();
@@ -78,7 +78,7 @@ fn call_complex() -> Result<String, String> {
 
     match rx.recv() {
         Ok(result) => {
-            // Сериализация результата в строку JSON
+            // Serialize result to JSON string
             match result {
                 Ok(value) => serde_json::to_string(&value).map_err(|e| e.to_string()),
                 Err(err) => Err(err),

@@ -1,53 +1,53 @@
-# Using DLLs in a Tauri Application on Windows
+# Использование DLL в приложении Tauri на Windows
 
-This simple example will show how to connect and use third-party DLL libraries in a Tauri application for Windows.
+Этот простой пример покажет как подключить и использовать сторонние dll библиотеки в приложении tauri для windows.
 
-## Checking the DLL
+## Проверка dll
 
-Before connecting the DLL to your project, ensure that the library is created and you can use it.
+Перед тем как подключать dll к своему проекту, проверьте что библиотека создана и вы можете ей пользоваться.
 
-To check if the DLL works, you can use the command:
+Чтобы проверить что dll работает, можно использовать команду:
     
-    Rundll32.exe {path to the library},{command name}
+    Rundll32.exe {путь до библиотеки},{имя команды}
 
-## Creating a DLL
+## Создание dll
 
-If you want to create your own library in a simpler language than Rust, you can take a look at an example of creating one in Go [https://github.com/JackGarner/Go_DLL_Create_Example].
+Если вы хотите создать свою библиотеку на более простом языке чем Rust, можете посмотреть пример создания на Go [https://github.com/JackGarner/Go_DLL_Create_Example]
 
-* In our example, we will use a DLL created in Go.
+* В нашем примере мы будем использовать dll созданную на Go
 
-## Creating a Tauri Project
+## Создание проект tauri
 
-We will be using Tauri 2. (Complete instructions on how to create a simple project can be found here [https://v2.tauri.app/start/].)
+Использовать будем tauri 2. (Полная инструкция как создать простой проект есть тут [https://v2.tauri.app/start/])
 
-Create a Tauri project named tauri-use-dll-examlpe:
+Создаем проект tauri-use-dll-examlpe
 
     npm create tauri-app@latest
 
-Navigate to the directory:
+Переходим в каталог
 
     cd tauri-use-dll-examlpe
 
-Install dependencies:
+Устанавливаем зависимости 
 
     npm install
 
-Check if it runs:
+Проверяем что запускается
 
     npm run tauri dev
 
-## Configuring Tauri
-Navigate to src-tauri.
-Important! The DLL must be located in this folder, as Rust considers it the main directory in the Tauri application.
+## Настройка tauri
+Переходим в src-tauri
+Важно! dll должна лежать именно в этой папке, т.к. Rust считает ее основной в приложении tauri.
 
     cd src-tauri
 
-Create a lib directory in the src-tauri folder:
+Создаем каталог lib в папке src-tauri
 
     mkdir lib
 
-In the file \src-tauri\tauri.conf.json, add a dependency on the created folder: bundle -> resources -> ["lib/*"].
-The complete config will look like this:
+В файле \src-tauri\tauri.conf.json добавляем зависимость на созданную папку: bundle -> resources -> ["lib/*"]
+Полностью конфиг получится такой
 
     {
         "$schema": "https://schema.tauri.app/config/2",
@@ -80,18 +80,18 @@ The complete config will look like this:
         }
     }
 
-Copy the DLL you want to use into the lib directory.
-In my case, this is \lib\example_from_go.dll.
+Копируем dll, которую хотим использовать в каталог lib.
+В моем случае это \lib\example_from_go.dll
 
-## Rust Dependencies
-To use the DLL, we will use 2 additional dependencies. You need to add them to the Cargo.toml file in [dependencies]:
+## Зависимости Rust
+Для использования dll мы будем использовать 2 дополнительные зависимости. Их необходимо добавить в файл Cargo.toml в [dependencies]:
 
     libc = "0.2"
     libloading = "0.8"
 
-## Rust Modifications
-Open the file \src-tauri\src\lib.rs.
-Add the dependencies (you can try not adding, but it's better to add):
+## Доработка Rust
+Открываем файл \src-tauri\src\lib.rs
+Добавляем зависимости (можно попробовать и не добавлять, но лучше добавить)
     
     use libloading::{Library, Symbol};
     use std::thread;
@@ -99,8 +99,8 @@ Add the dependencies (you can try not adding, but it's better to add):
     use serde_json::json;
     use std::ffi::CStr;
 
-### Simple Call: 
-Add a new method:
+### Простой вызов: 
+Добавляем новый метод
 
     fn call_simle() -> Result<u32, Box<dyn std::error::Error>> {
         unsafe {
@@ -112,24 +112,24 @@ Add a new method:
         }
     }
 
-Modify the call in the greet method:
+Дорабатываем вызов из метода greet
 
     fn greet(name: &str) -> String {
         let _ = call_simle();
         format!("Hello, {}! You've been greeted from Rust!", name)
     }
 
-Check:
-Run the application:
+Проверка:
+Запускаем приложение 
 
      npm run tauri dev
 
-When the application window appears, click the Greet button.
-In the console, you should see "Hello world!"
+Когда появится окно приложения, нажимаем кнопку Greet
+В консоли вы должны увидеть "Hello world!"
 
-### Complex Call: 
-If your DLL uses complex operations, such as COM (ActiveX), then a simple call will likely not work. For such situations, you need to make the call through a child process.
-Add a new method:
+### Сложный вызов: 
+Если ваша dll использует какие-то сложные операции, например использование COM (ActiveX), то простой вызов скорее всего не сработает. Для таких ситуаций необходимо делать вызов через дочерный процесс.
+Добавляем новый метод
 
     fn call_complex() -> Result<String, String> {
         let (tx, rx) = mpsc::channel();
@@ -164,10 +164,10 @@ Add a new method:
                     return;
                 }
 
-                // Convert C string to Rust string
+                // Конвертируем C строку в Rust строку
                 let result_str = CStr::from_ptr(result_ptr).to_string_lossy().into_owned();
 
-                // Return data in JSON format
+                // Возвращаем данные в формате JSON
                 let json_result = json!({ "result": result_str });
 
                 tx.send(Ok(json_result)).unwrap();
@@ -192,7 +192,7 @@ Add a new method:
         }
     }
 
-Modify the call in the greet method:
+Дорабатываем вызов из метода greet
 
     fn greet(name: &str) -> String {
         match call_complex() {
@@ -201,10 +201,10 @@ Modify the call in the greet method:
         }
     }
 
-Check:
-Run the application:
+Проверка:
+Запускаем приложение 
 
      npm run tauri dev
 
-When the application window appears, click the Greet button.
-In the application window, you should see "{"result":"hello from excel"}".
+Когда появится окно приложения, нажимаем кнопку Greet
+В окне приложения вы должны увидеть "{"result":"hello from excel"}"
