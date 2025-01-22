@@ -85,6 +85,7 @@
 
 ## Зависимости Rust
 Для использования dll мы будем использовать 2 дополнительные зависимости. Их необходимо добавить в файл Cargo.toml в [dependencies]:
+[https://docs.rs/libloading/latest/libloading/]
 
     libc = "0.2"
     libloading = "0.8"
