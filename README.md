@@ -1,4 +1,4 @@
-# Using DLLs in a Tauri Application on Windows
+# Using DLLs in a Tauri Application on Windows.
 
 This simple example will show how to connect and use third-party DLL libraries in a Tauri application for Windows.
 
