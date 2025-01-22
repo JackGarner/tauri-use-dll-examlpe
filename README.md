@@ -85,8 +85,9 @@ In my case, this is \lib\example_from_go.dll.
 
 ## Rust Dependencies
 To use the DLL, we will use 2 additional dependencies. You need to add them to the Cargo.toml file in [dependencies]:
+[https://docs.rs/libloading/latest/libloading/]
 
-    libc = "0.2"
+    libc = "0.2" 
     libloading = "0.8"
 
 ## Rust Modifications
